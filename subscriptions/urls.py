@@ -5,3 +5,6 @@ router = DefaultRouter()
 router.register(r'subscriptions' ,  SubscriptionViewSet , basename='subscriptions')
 
 urlpatterns = router.urls
+
+
+
