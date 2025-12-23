@@ -4,6 +4,6 @@ from .models import UsageLog
 class UsageLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsageLog
-        fields = '__all__'
+        fields = ['id' , 'used_on']
         read_only_fields = ['id']
         
