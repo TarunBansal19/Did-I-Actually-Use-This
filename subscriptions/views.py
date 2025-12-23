@@ -9,7 +9,7 @@ from .permissions import isOwner
 class SubscriptionViewSet(ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated , isOwner]
+    permission_classes = [IsAuthenticated , isOwner] # The user must be authenticated and must be the owner
 
     # Override get_queryset to return only subscriptions of the auth user
     def get_queryset(self):
