@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Subscription
 from .serializers import SubscriptionSerializer
 from .permissions import isOwner
-from datetime import datetime
+from datetime import date
 from django.db import IntegrityError
 from rest_framework.decorators import action
 from rest_framework.response import Response
