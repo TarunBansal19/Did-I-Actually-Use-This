@@ -14,7 +14,7 @@ class DashboardSummaryView(APIView):
         today = now().date()
         first_day_of_month = today.replace(day=1)
 
-        # Fetch subscriptions with monthly usage count
+        # Fetch subscription with monthly usage count
         subscriptions = Subscription.objects.filter(
             user=request.user,
             is_active=True
