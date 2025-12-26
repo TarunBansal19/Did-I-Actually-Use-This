@@ -26,7 +26,6 @@ class DashboardSummaryView(APIView):
                 )
             )
         )
-
         total_monthly_spend = 0
         subscriptions_data = []
         category_map = {}
@@ -37,15 +36,12 @@ class DashboardSummaryView(APIView):
                 sub.cost / 12 if sub.billing_frequency == 'yearly'
                 else sub.cost
             )
-
             total_monthly_spend += cost_this_month
-
             uses = sub.monthly_usage_count
             cost_per_use = (
                 round(float(cost_this_month) / uses, 2)
                 if uses > 0 else None
             )
-
             # Subscription-level data
             subscriptions_data.append({
                 "id": sub.id,
@@ -56,13 +52,11 @@ class DashboardSummaryView(APIView):
                 "cost_per_use": cost_per_use,
                 "is_wasted": uses == 0
             })
-
             # Category aggregation (monthly-normalized)
             if sub.category not in category_map:
                 category_map[sub.category] = 0
 
             category_map[sub.category] += cost_this_month
-
         # Category breakdown
         categories_data = []
         for category, cost in category_map.items():
@@ -76,7 +70,6 @@ class DashboardSummaryView(APIView):
                 "monthly_cost": round(float(cost), 2),
                 "percentage": percentage
             })
-
         return Response({
             "total_monthly_spend": round(float(total_monthly_spend), 2),
             "subscriptions": subscriptions_data,
