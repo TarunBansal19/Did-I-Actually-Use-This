@@ -25,7 +25,9 @@ class SubscriptionReminder(models.Model):
     def is_sent(self):
         return self.sent_at is not None
     
-    @property
+    # we wont do @property here as it is used for reading values methods not for setting values methods
     def mark_as_sent(self):
         self.sent_at = timezone.now()
         self.save()
+
+        
