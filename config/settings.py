@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'subscriptions',
     'usage',
     'dashboard',
+    'reminders',
 ]
 
 MIDDLEWARE = [

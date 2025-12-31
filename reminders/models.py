@@ -28,6 +28,6 @@ class SubscriptionReminder(models.Model):
     # we wont do @property here as it is used for reading values methods not for setting values methods
     def mark_as_sent(self):
         self.sent_at = timezone.now()
-        self.save()
+        self.save(update_fields=['sent_at'])
 
         

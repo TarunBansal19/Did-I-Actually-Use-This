@@ -36,14 +36,14 @@ class Command(BaseCommand):
                 continue #Skip is already sent
 
             #Simulate sending reminder
-            message = f"Hey ! Your subscription '{sub.name}' renews in {days_to_check} days."
+            message = f"Hey ! Your subscription '{sub.name}' renews in {days_to_check} days.\n"
 
             if sub.usage_this_month == 0:
                 message += " You haven't used your subscription this month. Want to cancel it?"
             else:
-                message += f"You've used your subscription {sub.usage_this_month} times this month. Keep it up!"
+                message += f"Used {sub.usage_this_month} times this month"
             
-            self.stdout.write(self.style.SUCCESS(f"Sending : {message} to {sub.user.email}"))
+            self.stdout.write(self.style.SUCCESS(f"Sending : {message} - to {sub.user.email}\n"))
 
             #Mark reminder as sent
             reminder.mark_as_sent()
