@@ -1,0 +1,14 @@
+Hi {{ user_name }},
+
+Your subscription "{{ subscription_name }}" will renew in 7 days.
+
+Monthly cost: ₹{{ monthly_cost }}
+Usage this month: {{ usage_count }} time(s)
+
+{{ usage_message }}
+
+Manage your subscription:
+{{ manage_url }}
+
+— Did I Actually Use This
+Helping you avoid paying for things you don’t use.

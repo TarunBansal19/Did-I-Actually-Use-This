@@ -27,15 +27,6 @@ load_dotenv(os.path.join(BASE_DIR , '.env'))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587 # Standard port for TLS
-EMAIL_USE_TLS = True # TLS provides encryption for email commmunication
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = "Did I Actually Use this test.epsilon.19@gmail.com" # Default "from" email address for sending emails
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
