@@ -35,15 +35,22 @@ Most subscription trackers only show **how much you spend**, not **whether it wa
 
 ## 🧠 Architecture Overview
 
-Client / API Consumer
-↓
-Django REST API
-↓
-Database (SQLite / PostgreSQL)
-↓
-Background Job (Management Command)
-↓
-Resend (Transactional Email Service)
+```mermaid
+graph TB
+    Client[Client / API Consumer]
+    API[Django REST API]
+    DB[(Database<br/>SQLite / PostgreSQL)]
+    Cron[Background Job<br/>Management Command]
+    Email[Resend<br/>Transactional Email Service]
+    
+    Client -->|HTTP Requests| API
+    API -->|Read/Write| DB
+    Cron -->|Query| DB
+    Cron -->|Send Emails| Email
+    DB -->|Data| Cron
+```
+
+### System Components Flow
 
 
 ### Key Design Principles
@@ -57,10 +64,42 @@ Resend (Transactional Email Service)
 
 ## 🔄 Core Flow
 
-1. User adds a subscription with renewal date and cost
-2. User manually logs usage per day
-3. Backend calculates monthly usage & cost-per-use
-4. Nightly cron job runs:
+```mermaid
+sequenceDiagram
+    participant User
+    participant API as Django REST API
+    participant DB as Database
+    participant Cron as Background Job
+    participant Email as Resend Email
+    
+    User->>API: 1. Add Subscription (cost, renewal_date)
+    API->>DB: Save Subscription
+    DB-->>API: Confirmation
+    API-->>User: Subscription Created
+    
+    User->>API: 2. Log Daily Usage
+    API->>DB: Save UsageLog
+    DB-->>API: Confirmation
+    API-->>User: Usage Logged
+    
+    Note over DB: 3. Backend calculates<br/>monthly usage & cost-per-use
+    
+    Note over Cron: 4. Nightly Cron Job (1 AM)
+    Cron->>DB: Find subscriptions renewing in 7 days
+    DB-->>Cron: List of subscriptions
+    Cron->>DB: Calculate usage summary
+    DB-->>Cron: Usage data
+    Cron->>Email: Send HTML reminder email
+    Email-->>Cron: Email sent
+    Cron->>DB: Mark reminder as sent (idempotent)
+```
+
+### Step-by-Step Process
+
+1. **User adds a subscription** with renewal date and cost
+2. **User manually logs usage** per day
+3. **Backend calculates** monthly usage & cost-per-use
+4. **Nightly cron job runs**:
    - Finds subscriptions renewing in 7 days
    - Generates usage summary
    - Sends HTML reminder email
@@ -74,134 +113,149 @@ Renewal reminders are processed using a **Django management command**:
 
 ```bash
 python manage.py send_renewal_reminders
+```
 
 Scheduled via Linux cron:
 
+```bash
 0 1 * * * /path/to/venv/bin/python /path/to/manage.py send_renewal_reminders
+```
 
+### Why cron (not Celery)?
 
-Why cron (not Celery)?
+- ✅ Simple and reliable
+- ✅ No extra infrastructure
+- ✅ Ideal for daily batch jobs
+- ✅ Easy to debug and monitor
 
-Simple and reliable
+## ✉️ Email System
 
-No extra infrastructure
+- HTML emails designed using Stripo
+- Plain-text fallback for deliverability
+- Transactional delivery via Resend
 
-Ideal for daily batch jobs
+> **Note:** Gmail SMTP was intentionally replaced due to spam blocking of automated HTML emails. Only the email delivery layer was swapped — all business logic remained unchanged.
 
-Easy to debug and monitor
-
-✉️ Email System
-
-HTML emails designed using Stripo
-
-Plain-text fallback for deliverability
-
-Transactional delivery via Resend
-
-Gmail SMTP was intentionally replaced due to spam blocking of automated HTML emails
-
-Only the email delivery layer was swapped — all business logic remained unchanged.
-
-📧 Email Preview
+### 📧 Email Preview
 
 Below is a real HTML renewal reminder email sent by the system using Resend:
 
 This email is:
+- Generated dynamically using Django templates
+- Usage-aware (shows monthly usage & cost)
+- Sent automatically via a scheduled background job
 
-Generated dynamically using Django templates
+## 🧩 Data Models
 
-Usage-aware (shows monthly usage & cost)
+### Database Relationship Diagram
 
-Sent automatically via a scheduled background job
+```mermaid
+erDiagram
+    USER {
+        int id PK
+        string username
+        string email
+    }
 
-🧩 Data Models (Simplified)
-Subscription
+    SUBSCRIPTION {
+        int id PK
+        int user_id FK
+        string name
+        string category
+        decimal cost
+        string billing_frequency
+        date renewal_date
+        string cancel_url
+        bool is_active
+        datetime created_at
+        datetime updated_at
+    }
 
-name
+    USAGELOG {
+        int id PK
+        int subscription_id FK
+        date used_on
+        datetime created_at
+    }
 
-category
+    SUBSCRIPTIONREMINDER {
+        int id PK
+        int subscription_id FK
+        int days_before
+        datetime sent_at
+        datetime created_at
+    }
 
-cost
+    USER ||--o{ SUBSCRIPTION : "has many"
+    SUBSCRIPTION ||--o{ USAGELOG : "has many"
+    SUBSCRIPTION ||--o{ SUBSCRIPTIONREMINDER : "has many"
+```
 
-billing_frequency
+### Model Details
 
-renewal_date
+#### Subscription
+- `user` (ForeignKey to User)
+- `name` (CharField, max 100 chars)
+- `category` (Choices: entertainment, music, tools, games, education, other)
+- `cost` (DecimalField, 10 digits, 2 decimal places - INR)
+- `billing_frequency` (Choices: monthly, yearly, one-time, custom, trial)
+- `renewal_date` (DateField)
+- `cancel_url` (URLField, optional)
+- `is_active` (BooleanField, default True)
+- `created_at`, `updated_at` (DateTimeField, auto)
 
-is_active
+#### UsageLog
+- `subscription` (ForeignKey to Subscription, related_name='usage_logs')
+- `used_on` (DateField)
+- `created_at` (DateTimeField, auto)
+- **Constraint:** Unique per subscription per day (`unique_usage_per_day`)
 
-UsageLog
+#### SubscriptionReminder
+- `subscription` (ForeignKey to Subscription, related_name='reminders')
+- `days_before` (IntegerField)
+- `sent_at` (DateTimeField, nullable)
+- `created_at` (DateTimeField, auto)
+- **Constraint:** Unique per subscription per `days_before` (ensures idempotent reminder delivery)
 
-subscription
+## 🛠️ Tech Stack
 
-used_on (date)
+- **Backend:** Django, Django REST Framework
+- **Auth:** JWT (Simple JWT)
+- **Database:** SQLite (dev), PostgreSQL (prod-ready)
+- **Email:** Resend (Transactional Email API)
+- **Scheduling:** Linux cron
+- **Templates:** HTML + Plain-text emails
 
-SubscriptionReminder
-
-subscription
-
-days_before
-
-sent_at
-
-Used to ensure idempotent reminder delivery.
-
-🛠️ Tech Stack
-
-Backend: Django, Django REST Framework
-
-Auth: JWT
-
-Database: SQLite (dev), PostgreSQL (prod-ready)
-
-Email: Resend (Transactional Email API)
-
-Scheduling: Linux cron
-
-Templates: HTML + Plain-text emails
-
-🧠 Design & Learning Notes
+## 🧠 Design & Learning Notes
 
 While building this project, architecture and system flow were actively planned and reasoned about using Excalidraw.
 
-🔗 Design & flow diagrams:
-https://excalidraw.com/#json=HP0Be-3xFQunGptdlaLlf,uVXU8IoiHFeApv0KHAVTiQ
+🔗 **Design & flow diagrams:** [Excalidraw Link](https://excalidraw.com/#json=HP0Be-3xFQunGptdlaLlf,uVXU8IoiHFeApv0KHAVTiQ)
 
-📌 Tradeoffs & Decisions
+## 📌 Tradeoffs & Decisions
 
-❌ No auto-tracking (manual usage is intentional)
+- ❌ **No auto-tracking** (manual usage is intentional)
+- ❌ **No payment or bank integrations**
+- ❌ **No scraping**
+- ✅ **Privacy-first**
+- ✅ **Backend reliability over feature bloat**
 
-❌ No payment or bank integrations
+## 🔮 Possible Improvements
 
-❌ No scraping
+- Frontend dashboard (React)
+- User notification preferences
+- Multiple reminder windows (3 / 1 days)
+- WhatsApp notifications
+- Monthly PDF reports
+- Unsubscribe handling
 
-✅ Privacy-first
-
-✅ Backend reliability over feature bloat
-
-🔮 Possible Improvements
-
-Frontend dashboard (React)
-
-User notification preferences
-
-Multiple reminder windows (3 / 1 days)
-
-WhatsApp notifications
-
-Monthly PDF reports
-
-Unsubscribe handling
-
-⭐ Why This Project
+## ⭐ Why This Project
 
 This project focuses on real backend engineering problems:
 
-background jobs
-
-email deliverability
-
-idempotency
-
-production constraints
+- Background jobs
+- Email deliverability
+- Idempotency
+- Production constraints
 
 It is intentionally not a CRUD demo.
