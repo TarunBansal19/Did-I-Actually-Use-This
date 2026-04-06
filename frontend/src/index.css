@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
+:root {
+  --bg: #faf8f5;
+  --bg-card: #ffffff;
+  --text: #1a1614;
+  --text-muted: #6b6560;
+  --accent: #2d6a4f;
+  --accent-soft: #40916c;
+  --waste: #c94c4c;
+  --waste-soft: #f8e8e8;
+  --border: #e8e4df;
+  --shadow: rgba(26, 22, 20, 0.06);
+  --radius: 12px;
+  --calendar-cell: #f5f3ef;
+  --calendar-today: #c94c4c;
+  --calendar-today-text: #fff;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a1c;
+  --bg-card: #252528;
+  --text: #e8e6e3;
+  --text-muted: #9a9691;
+  --accent: #40916c;
+  --accent-soft: #52b788;
+  --waste: #e07a7a;
+  --waste-soft: #3d2a2a;
+  --border: #3a3a3e;
+  --shadow: rgba(0, 0, 0, 0.25);
+  --calendar-cell: #2d2d30;
+  --calendar-today: #c94c4c;
+  --calendar-today-text: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input, select {
+  font-family: inherit;
+}

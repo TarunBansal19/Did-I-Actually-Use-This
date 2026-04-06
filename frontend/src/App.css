@@ -1,0 +1,9 @@
+.app-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #faf8f5);
+  color: var(--text-muted, #6b6560);
+  font-size: 1.1rem;
+}

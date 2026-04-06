@@ -1,0 +1,63 @@
+.app-footer {
+  margin-top: auto;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem 1.5rem;
+}
+
+.app-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.app-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-footer-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.app-footer-tagline {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.app-footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.app-footer-links a {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.app-footer-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-footer-bottom {
+  max-width: 1200px;
+  margin: 1.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.app-footer-bottom p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
