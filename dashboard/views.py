@@ -50,7 +50,9 @@ class DashboardSummaryView(APIView):
                 "monthly_cost": round(float(cost_this_month), 2),
                 "uses_this_month": uses,
                 "cost_per_use": cost_per_use,
-                "is_wasted": uses == 0
+                "is_wasted": uses == 0,
+                "renewal_date": sub.renewal_date.isoformat(),
+                "created_at": sub.created_at.isoformat(),
             })
             # Category aggregation (monthly-normalized)
             if sub.category not in category_map:
