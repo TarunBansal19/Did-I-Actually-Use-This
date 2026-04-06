@@ -1,10 +1,9 @@
-from tokenize import blank_re
 from django.db import models
 from django.conf import settings
 
-User = settings.AUTH_USER_MODEL 
+User = settings.AUTH_USER_MODEL
 
-# Create your models here.
+
 class Subscription(models.Model):
     CATEGORY_CHOICES = [
         ('entertainment' , 'Entertainment'),
@@ -28,10 +27,11 @@ class Subscription(models.Model):
     cost = models.DecimalField(max_digits = 10 , decimal_places = 2) #inr only 
     billing_frequency = models.CharField(max_length = 20 , choices = BILLING_FREQUENCY_CHOICES)
     renewal_date = models.DateField()
-    cancel_url = models.URLField(blank = True , null = True)
-    is_active = models.BooleanField(default = True)
+    cancel_url = models.URLField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    reminders_enabled = models.BooleanField(default=True)
 
-    created_at = models.DateTimeField(auto_now_add = True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 
     def __str__(self):

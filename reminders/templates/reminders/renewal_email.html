@@ -1,119 +1,95 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <title>
-      Subscription Renewal Reminder
-    </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Renewal Reminder</title>
     <style type="text/css">
-      /* Base Resets */ body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; } table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; } img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; } table { border-collapse: collapse !important; } body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; } /* Typography */ body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4; color: #333333; } /* Mobile Styles */ @media screen and (max-width: 600px) { .email-container { width: 100% !important; } .fluid { width: 100% !important; height: auto !important; } .stack-column { display: block !important; width: 100% !important; direction: ltr !important; } .mobile-padding { padding-left: 20px !important; padding-right: 20px !important; } .header-text { font-size: 24px !important; } }
+      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      table { border-collapse: collapse !important; }
+      body { margin: 0 !important; padding: 0 !important; height: 100% !important; width: 100% !important; }
+      @media screen and (max-width: 600px) {
+        .email-container { width: 100% !important; max-width: 100% !important; }
+        .mobile-padding { padding-left: 20px !important; padding-right: 20px !important; }
+        .hero-title { font-size: 22px !important; }
+      }
     </style>
   </head>
-  <body bgcolor="#f4f4f4" style="margin: 0; padding: 0">
-    <table bgcolor="#f4f4f4" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <body style="margin: 0; padding: 0; background-color: #faf8f5; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1614; line-height: 1.5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #faf8f5;">
       <tr>
-        <td align="center" style="padding: 20px 0">
-          <table border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05)">
+        <td align="center" style="padding: 32px 16px;">
+          <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 2px 12px rgba(26, 22, 20, 0.08); border: 1px solid #e8e4df; overflow: hidden;">
+            <!-- Header: text brand (no logo) -->
             <tr>
-              <td align="center" style="background-color: #ffffff; padding: 0">
-                <a href="{{ manage_url }}" target="_blank">
-                  <img alt="Did I Actually Use This?" src="https://eaeeljc.stripocdn.email/content/guids/CABINET_8d95e30f129ce525ef56161acc52279f7166574126649ea72ab415b46f9771ec/images/image_zub.png" width="600" style="display: block; width: 100%; max-width: 600px; height: auto; border: 0">
+              <td style="padding: 28px 40px 24px; text-align: center; border-bottom: 1px solid #e8e4df; background-color: #ffffff;">
+                <a href="{{ manage_url }}" target="_blank" style="text-decoration: none; color: #1a1614;">
+                  <span style="font-family: Georgia, 'Times New Roman', serif; font-weight: 600; font-size: 1.35rem; color: #1a1614;">Did I Actually Use This?</span>
                 </a>
               </td>
             </tr>
+            <!-- Main content -->
             <tr>
-              <td esd-text="true" class="mobile-padding esd-text" style="padding: 40px 40px 20px 40px">
-                <h1 class="header-text" style="margin: 0 0 20px 0; font-size: 28px; font-weight: 700; color: #1a1a1a; line-height: 1.2">
-                  Your subscription renews in 7 days
+              <td class="mobile-padding" style="padding: 32px 40px 28px;">
+                <h1 class="hero-title" style="margin: 0 0 20px; font-family: Georgia, serif; font-weight: 600; font-size: 26px; line-height: 1.25; color: #1a1614;">
+                  Your subscription renews in {{ days_before }} day{% if days_before != 1 %}s{% endif %}
                 </h1>
-                <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555555">
-                  Hi
-                  <strong>
-                    {{ user_name }}
-                  </strong>
-                  ,
+                <p style="margin: 0 0 16px; font-size: 16px; color: #6b6560;">
+                  Hi <strong style="color: #1a1614;">{{ user_name }}</strong>,
                 </p>
-                <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555555">
-                  This is a quick reminder that your subscription to
-                  <strong>
-                    {{ subscription_name }}
-                  </strong>
-                  is coming up for renewal.
+                <p style="margin: 0 0 24px; font-size: 16px; color: #6b6560;">
+                  A quick reminder that <strong style="color: #1a1614;">{{ subscription_name }}</strong> is coming up for renewal.
                 </p>
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef">
+                <!-- Stats card -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f3ef; border-radius: 12px; border: 1px solid #e8e4df; margin-bottom: 24px;">
                   <tr>
-                    <td style="padding: 20px">
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <td style="padding: 20px 24px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                         <tr>
-                          <td style="padding-bottom: 10px; font-size: 14px; color: #777777">
-                            Monthly Cost:
-                          </td>
-                          <td align="right" style="padding-bottom: 10px; font-size: 16px; font-weight: bold; color: #333333">
-                            ₹{{ monthly_cost }}
-                          </td>
+                          <td style="padding-bottom: 10px; font-size: 14px; color: #6b6560;">Monthly cost</td>
+                          <td align="right" style="padding-bottom: 10px; font-size: 16px; font-weight: 700; color: #1a1614;">₹{{ monthly_cost }}</td>
                         </tr>
                         <tr>
-                          <td style="padding-bottom: 10px; font-size: 14px; color: #777777">
-                            Usage this month:
-                          </td>
-                          <td align="right" style="padding-bottom: 10px; font-size: 16px; font-weight: bold; color: #333333">
-                            {{ usage_count }} time(s)
-                          </td>
+                          <td style="padding-bottom: 10px; font-size: 14px; color: #6b6560;">Usage this month</td>
+                          <td align="right" style="padding-bottom: 10px; font-size: 16px; font-weight: 700; color: #1a1614;">{{ usage_count }} time{% if usage_count != 1 %}s{% endif %}</td>
                         </tr>
                         <tr>
-                          <td colspan="2" style="border-top: 1px dashed #cccccc; padding-top: 10px; font-size: 14px; line-height: 1.5; color: #555555; font-style: italic">
-                            {{ usage_message }}
-                          </td>
+                          <td colspan="2" style="border-top: 1px dashed #e8e4df; padding-top: 12px; font-size: 14px; line-height: 1.5; color: #6b6560; font-style: italic;">{{ usage_message }}</td>
                         </tr>
                       </table>
                     </td>
                   </tr>
                 </table>
-                <br>
-                <br>
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <!-- CTA button (website accent green) -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     <td align="center">
-                      <a href="{{ manage_url }}" target="_blank" style="background-color: #2c3e50; color: #ffffff; display: inline-block; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 260px; border-radius: 4px; -webkit-text-size-adjust: none">
-                        Manage Subscription
-                      </a>
+                      <a href="{{ manage_url }}" target="_blank" style="display: inline-block; padding: 14px 28px; background-color: #2d6a4f; color: #ffffff !important; font-size: 16px; font-weight: 600; text-decoration: none; border-radius: 8px;">Manage subscription</a>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
+            <!-- Why this email -->
             <tr>
-              <td esd-text="true" class="mobile-padding esd-text" style="padding: 20px 40px 40px 40px">
-                <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 0 0 20px 0">
-                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #999999; text-transform: uppercase; letter-spacing: 1px">
-                  Why this email?
-                </h3>
-                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #999999">
-                  You’re receiving this because you track subscriptions on
-                  <strong>
-                    Did I Actually Use This?
-                  </strong>
-                  . Our goal is simple: help you avoid paying for things you don’t use.
+              <td class="mobile-padding" style="padding: 20px 40px 28px; border-top: 1px solid #e8e4df;">
+                <p style="margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6b6560; text-transform: uppercase; letter-spacing: 0.5px;">Why this email?</p>
+                <p style="margin: 0; font-size: 14px; color: #6b6560; line-height: 1.5;">
+                  You track subscriptions on <strong style="color: #1a1614;">Did I Actually Use This?</strong> — we’re here to help you avoid paying for things you don’t use.
                 </p>
               </td>
             </tr>
           </table>
-          <table border="0" cellpadding="0" cellspacing="0" width="600" class="email-container">
+          <!-- Footer -->
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="email-container" style="max-width: 600px;">
             <tr>
-              <td align="center" esd-text="true" class="esd-text" style="padding: 20px 0; font-size: 12px; line-height: 1.5; color: #bbbbbb">
-                <p style="margin: 0">
-                  © 2025 Did I Actually Use This? All rights reserved.
-                </p>
-                <p style="margin: 10px 0 0 0">
-                  <a href="#" style="color: #bbbbbb; text-decoration: underline">
-                    Privacy Policy
-                  </a>
-                  •
-                  <a href="#" style="color: #bbbbbb; text-decoration: underline">
-                    Unsubscribe
-                  </a>
-                </p>
+              <td align="center" style="padding: 24px 16px; font-size: 12px; color: #6b6560; line-height: 1.5;">
+                <p style="margin: 0;">© 2025 Did I Actually Use This?</p>
+                <p style="margin: 8px 0 0;">Helping you avoid paying for things you don’t use.</p>
+                {% if unsubscribe_url %}
+                <p style="margin: 12px 0 0;"><a href="{{ unsubscribe_url }}" style="color: #6b6560; text-decoration: underline;">Unsubscribe from renewal emails</a></p>
+                {% endif %}
               </td>
             </tr>
           </table>

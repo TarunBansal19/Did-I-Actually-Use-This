@@ -1,8 +1,23 @@
 from django.db import models
+from django.conf import settings
 from subscriptions.models import Subscription
 from django.utils import timezone
 
-# Create your models here.
+User = settings.AUTH_USER_MODEL
+
+
+class UserReminderPreference(models.Model):
+    """Per-user reminder settings: which days and whether reminders are on."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='reminder_preference')
+    reminders_enabled = models.BooleanField(default=True)
+    reminder_days = models.CharField(max_length=32, default='7,3,1')  # e.g. "7,3,1"
+
+    def get_reminder_days_list(self):
+        try:
+            return [int(d.strip()) for d in self.reminder_days.split(',') if d.strip()]
+        except (ValueError, AttributeError):
+            return [7, 3, 1]
+
 
 class SubscriptionReminder(models.Model):
     subscription = models.ForeignKey(

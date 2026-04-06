@@ -109,13 +109,28 @@ sequenceDiagram
 
 ## ⏰ Background Jobs & Scheduling
 
-Renewal reminders are processed using a **Django management command**:
+Renewal reminders are processed using a **Django management command**.
 
+### Commands to send renewal emails
+
+**Default (7, 3, and 1 day before renewal):**
 ```bash
 python manage.py send_renewal_reminders
 ```
 
-Scheduled via Linux cron:
+**Custom reminder days (e.g. 14, 7, 3, 1):**
+```bash
+python manage.py send_renewal_reminders --days 14,7,3,1
+```
+
+**Only 7 days before:**
+```bash
+python manage.py send_renewal_reminders --days 7
+```
+
+**Requires:** `RESEND_API_KEY` in your environment (e.g. `.env`). Emails are sent via Resend; each subscription gets at most one email per `days_before` value (idempotent).
+
+### Schedule with cron (nightly)
 
 ```bash
 0 1 * * * /path/to/venv/bin/python /path/to/manage.py send_renewal_reminders
@@ -130,7 +145,7 @@ Scheduled via Linux cron:
 
 ## ✉️ Email System
 
-- HTML emails designed using Stripo
+- HTML emails styled to match the website (brand text “Did I Actually Use This?”, accent green, rounded cards)
 - Plain-text fallback for deliverability
 - Transactional delivery via Resend
 
@@ -240,14 +255,20 @@ While building this project, architecture and system flow were actively planned 
 - ✅ **Privacy-first**
 - ✅ **Backend reliability over feature bloat**
 
-## 🔮 Possible Improvements
+## 🖥️ Frontend (React + Vite)
 
-- Frontend dashboard (React)
-- User notification preferences
-- Multiple reminder windows (3 / 1 days)
-- WhatsApp notifications
-- Monthly PDF reports
-- Unsubscribe handling
+A React dashboard is included in `frontend/`. To run the full stack:
+
+```bash
+# Terminal 1: start Django backend
+python manage.py runserver
+
+# Terminal 2: start frontend dev server (proxies /api to backend)
+cd frontend && npm install && npm run dev
+```
+
+Open **http://localhost:5173**. The frontend proxies `/api` requests to Django and supports: auth (register/login), dashboard (spend, categories), and subscription management with "Used today" logging.
+
 
 ## ⭐ Why This Project
 
